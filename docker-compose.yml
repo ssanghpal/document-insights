@@ -1,0 +1,31 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  app:
+    build: .
+    container_name: document-insights-app
+    ports:
+      - "8003:8003"
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      MONGO_URL: mongodb://mongo:27017
+      REDIS_HOST: redis
+    volumes:
+      - .:/app
+
+volumes:
+  mongo_data:
